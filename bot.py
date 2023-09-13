@@ -1,0 +1,30 @@
+import subprocess
+import time
+
+# Ruta local donde se encuentra tu repositorio clonado
+local_repo_path = "/var/www/html"
+
+# URL del repositorio remoto en GitHub
+github_repo_url = "https://github.com/HenryCapdevilla/DesingVHISPY.git"
+
+while True:
+    try:
+        # Ejecuta "git fetch" para obtener las actualizaciones del repositorio remoto
+        subprocess.run(["git", "fetch"], cwd=local_repo_path, check=True)
+
+        # Comprueba si hay cambios en la rama principal (master)
+        result = subprocess.run(["git", "status", "-uno"], cwd=local_repo_path, stdout=subprocess.PIPE, text=True)
+        status_output = result.stdout
+
+        # Si hay cambios en la rama principal, realiza una actualización (pull)
+        if "Your branch is behind" in status_output:
+            subprocess.run(["git", "pull"], cwd=local_repo_path, check=True)
+            print("Se ha realizado una actualización exitosamente.")
+        else:
+            print("No se encontraron cambios en la rama principal.")
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error al ejecutar el comando Git: {e}")
+
+    # Espera un tiempo antes de volver a verificar actualizaciones (por ejemplo, cada 5 minutos)
+    time.sleep(100)  # Espera 300 segundos (5 minutos)

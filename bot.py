@@ -20,18 +20,24 @@ while True:
         uncommitted_changes = "Changes not staged for commit" in status_output
 
         if uncommitted_changes:
-            print("Hay cambios locales sin confirmar. Confirma o descarta tus cambios antes de actualizar.")
+            print("Hay cambios locales sin confirmar. Realizando confirmación automática.")
+            # Confirma los cambios automáticamente con un mensaje
+            subprocess.run(["git", "commit", "-am", "Commit automático antes de la actualización"], cwd=local_repo_path, check=True)
+            print("Cambios confirmados exitosamente.")
+            
+            # Realiza un empuje (push) automático para enviar los cambios al repositorio remoto
+            subprocess.run(["git", "push"], cwd=local_repo_path, check=True)
+            print("Cambios empujados al repositorio remoto.")
+
+        # Si hay cambios en la rama principal, realiza una actualización (pull)
+        if "Your branch is behind" in status_output:
+            subprocess.run(["git", "pull"], cwd=local_repo_path, check=True)
+            print("Se ha realizado una actualización exitosamente.")
         else:
-            # Si hay cambios en la rama principal, realiza una actualización (pull)
-            if "Your branch is behind" in status_output:
-                subprocess.run(["git", "pull"], cwd=local_repo_path, check=True)
-                print("Se ha realizado una actualización exitosamente.")
-            else:
-                print("No se encontraron cambios en la rama principal.")
+            print("No se encontraron cambios en la rama principal.")
 
     except subprocess.CalledProcessError as e:
         print(f"Error al ejecutar el comando Git: {e}")
 
     # Espera un tiempo antes de volver a verificar actualizaciones (por ejemplo, cada 5 minutos)
-    time.sleep(300)  # Espera 300 segundos (5 minutos)
-
+    time.sleep(50)  # Espera 300 segundos (5 minutos)

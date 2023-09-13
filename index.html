@@ -28,6 +28,12 @@
 	// Initialize the Leaflet map
     var map = L.map('map').setView([0, 0], 2); // Set initial map center and zoom level
 
+    // Agrega un control de zoom para permitir el zoom no restringido
+    L.control.zoom({ position: 'topright' }).addTo(map);
+
+    // Cambia el nivel de zoom a 10 sin restricciones
+    map.setZoom(10);
+    
     // Add a tile layer (you can choose your preferred tile layer)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
